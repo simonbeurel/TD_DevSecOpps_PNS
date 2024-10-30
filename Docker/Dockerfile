@@ -83,6 +83,8 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 # Copy existing application directory contents
 COPY . /var/www/html
 
+RUN composer install
+
 RUN rm -Rf /var/www/html/docker
 
 # Ensure the volumes directories exist
