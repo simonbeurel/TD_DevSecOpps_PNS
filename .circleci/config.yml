@@ -191,10 +191,20 @@ jobs:
             echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
             # Build the Docker image
-            docker build -f ./Docker/Dockerfile -t td_dev_secopps:latest .
+            docker build \
+            -f Docker/Dockerfile \
+            -t $REPOSITORY:$TAG \
+            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+            --build-arg TAG="${TAG}" \
+            --build-arg GIT_COMMIT=$(git rev-parse -q --verify HEAD) \
+            --build-arg GIT_URL=$(echo ${CIRCLE_REPOSITORY_URL} | sed -e 's/^git@/https:\/\//g' -e 's/\.git$//g' -e 's/:/\//g') \
+            --build-arg SQLITE_VERSION=3430200 \
+            --build-arg SQLITE_YEAR=2023 \
+            --build-arg PROJECT_USERNAME=$CIRCLE_PROJECT_USERNAME \
+            .
 
             # Push the Docker image
-            docker push td_dev_secopps:latest
+            docker push $REPOSITORY:$TAG
 
 
   deploy-ssh-staging:
