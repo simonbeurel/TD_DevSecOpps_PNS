@@ -197,7 +197,7 @@ jobs:
             docker build -t td_dev_sec_ops_beurel:latest .
 
             # Push the Docker image
-            docker push $REPOSITORY:$TAG
+            docker push td_dev_sec_ops_beurel:latest
 
 
   deploy-ssh-staging:
