@@ -190,14 +190,11 @@ jobs:
             # Login to GHCR
             echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
-            #Go to the Docker directory
-            cd Docker
-
             # Build the Docker image
-            docker build -t td_dev_sec_ops_beurel:latest .
+            docker build -f ./Docker/Dockerfile -t td_dev_secopps:latest .
 
             # Push the Docker image
-            docker push td_dev_sec_ops_beurel:latest
+            docker push td_dev_secopps:latest
 
 
   deploy-ssh-staging:
