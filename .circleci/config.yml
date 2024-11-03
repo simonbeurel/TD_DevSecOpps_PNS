@@ -193,7 +193,7 @@ jobs:
             # Build the Docker image
             docker build \
             -f docker/Dockerfile \
-            -t $REPOSITORY:$TAG \
+            -t td_dev_sec_ops_beurel:latest \
             .
 
             # Push the Docker image
