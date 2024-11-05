@@ -302,6 +302,7 @@ jobs:
           command: |
             wget https://phar.phpunit.de/phploc.phar
             php phploc.phar --version
+            ls -la src
             php phploc.phar src
 
 workflows:
