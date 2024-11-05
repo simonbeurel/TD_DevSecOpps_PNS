@@ -107,8 +107,8 @@ jobs:
           path: phpmd_report.txt
           destination: phpmd_report.txt
       - store_artifacts:
-          path: phpmd.xml
-          destination: phpmd.xml
+          path: phpdoc_report.txt
+          destination: phpdoc_report.txt
 
 
 
