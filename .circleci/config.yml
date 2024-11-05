@@ -232,9 +232,7 @@ jobs:
       - deploy:
           name: Deploy to Production
           command: |
-            echo "$SSH_KEY" | base64 --decode > ~/PS8-CupMazKey.pem
-            chmod 600 ~/PS8-CupMazKey.pem
-            ssh -i "~/PS8-CupMazKey.pem" ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com
+            ssh -o StrictHostKeyChecking=no -p 22 ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "echo 'Connected!'"
 
 
 workflows:
