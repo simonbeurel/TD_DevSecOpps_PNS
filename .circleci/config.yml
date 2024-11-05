@@ -296,7 +296,15 @@ jobs:
           path: phpmetrics-report.json
           destination: phpmetrics-report
 
-
+  phploc:
+    executor: simple-executor
+    steps:
+      - deploy:
+          name: measure the size and analyze the structure of the PHP project
+          command: |
+            wget https://phar.phpunit.de/phploc.phar
+            php phploc.phar --version
+            php phploc.phar src
 
 workflows:
   main_workflow:
