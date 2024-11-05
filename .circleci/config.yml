@@ -295,7 +295,7 @@ jobs:
           destination: phpmetrics-report
 
   phploc:
-    executor: simple-executor
+    executor: php-executor
     steps:
       - deploy:
           name: measure the size and analyze the structure of the PHP project
