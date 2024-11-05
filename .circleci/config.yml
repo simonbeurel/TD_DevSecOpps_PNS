@@ -359,6 +359,5 @@ workflows:
       - quality_check:
           requires:
             - build-setup
-            - test-phpunit
 
           
