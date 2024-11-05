@@ -185,7 +185,7 @@ jobs:
 
             # Sanitize the repository name and branch name
             echo "Project: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-            REPOSITORY=$(echo "ghcr.io/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]' | tr -d '_')
+            REPOSITORY=$(echo "ghcr.io/simonbeurel/TD_DevSecOpps_PNS" | tr '[:upper:]' '[:lower:]' | tr -d '_')
             TAG=$(echo $CIRCLE_BRANCH | tr '[:upper:]' '[:lower:]' | tr '/' '-' | tr -cd '[:alnum:]._-' | cut -c 1-128)
             
             # Login to GHCR
@@ -202,7 +202,7 @@ jobs:
             --build-arg GIT_URL=$(echo ${CIRCLE_REPOSITORY_URL} | sed -e 's/^git@/https:\/\//g' -e 's/\.git$//g' -e 's/:/\//g') \
             --build-arg SQLITE_VERSION=3430200 \
             --build-arg SQLITE_YEAR=2023 \
-            --build-arg PROJECT_USERNAME=$CIRCLE_PROJECT_USERNAME \
+            --build-arg PROJECT_USERNAME=TD_DevSecOpps_PNS \
             .
             echo "Pushing the Image to $REPOSITORY:$TAG"
             docker push $REPOSITORY:$TAG
