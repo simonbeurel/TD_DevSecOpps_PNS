@@ -297,13 +297,27 @@ jobs:
   phploc:
     executor: php-executor
     steps:
-      - deploy:
-          name: measure the size and analyze the structure of the PHP project
-          command: |
-            wget https://phar.phpunit.de/phploc.phar
-            php phploc.phar --version
-            ls -la .
-            php phploc.phar src
+      - steps:
+          - *attach_workspace
+          - run:
+            name: Get PHPLOC
+            command: |
+              wget https://phar.phpunit.de/phploc.phar
+              php phploc.phar --version
+              chmod +x phploc.phar
+          - run:
+              name: Run PHPLOC
+              command:
+                 php phploc.phar --ansi --report-xml=phploc-report.xml --report-html=phploc-report.html --report-json=phploc-report.json .
+          - store_artifacts:
+              path: phploc-report.xml
+              destination: phploc-report
+          - store_artifacts:
+              path: phploc-report.html
+              destination: phploc-report
+          - store_artifacts:
+              path: phploc-report.json
+              destination: phploc-report
 
 workflows:
   main_workflow:
