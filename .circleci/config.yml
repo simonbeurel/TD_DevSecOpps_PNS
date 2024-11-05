@@ -87,6 +87,34 @@ jobs:
             echo "--------------------"
             env
 
+  quality_check:
+      executor: php-executor
+      steps:
+        - *attach_workspace
+        - checkout
+        - run:
+          name: Install Composer
+          command: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+        - run:
+          name: Install phpmd and php-doc-check
+          command: |
+            composer require --dev phpmd/phpmd
+            composer require --dev niels-de-blaauw/php-doc-check
+        - run:
+          name: Run PHPMD
+          command: ./vendor/bin/phpmd src text phpmd.xml
+        - run:
+          name: Run PHP Doc Check
+          command: ./vendor/bin/php-doc-check src > phpdoc_report.txt
+        - store_artifacts:
+            path: phpdoc_report.txt
+            destination: phpdoc_report.txt
+        - store_artifacts:
+            path: phpmd.xml
+            destination: phpmd.xml
+
+
+
   build-setup:
     executor: php-executor
     steps:
@@ -302,3 +330,13 @@ workflows:
                 - /^release\/.*/
                 - /^hotfix\/.*/
                 - /^bugfix\/.*/
+
+  metrics_workflow:
+    jobs:
+      - debug-info
+      - build-setup
+      - quality_check:
+          requires:
+            - build-setup
+            - test-phpunit
+          
