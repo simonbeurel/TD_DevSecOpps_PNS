@@ -248,6 +248,26 @@ jobs:
             echo "Done7"
             EOF
 
+  phpmetrics:
+    executor: php-executor
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install PHPMetrics
+          command: composer require --dev phpmetrics/phpmetrics
+      - run:
+          name: Run PHPMetrics
+          command: ./vendor/bin/phpmetrics --report-html=phpmetrics-report.html --report-xml=phpmetrics-report.xml --report-json=phpmetrics-report.json --ignore=vendor/ .
+      - store_artifacts:
+          path: phpmetrics-report.html
+          destination: phpmetrics-report
+      - store_artifacts:
+          path: phpmetrics-report.xml
+          destination: phpmetrics-report
+      - store_artifacts:
+          path: phpmetrics-report.json
+          destination: phpmetrics-report
+
 
 
 workflows:
@@ -264,6 +284,9 @@ workflows:
       - test-phpunit:
           requires:
             - build-setup
+      - phpmetrics:
+            requires:
+                - build-setup
       - hold:
           type: approval
           filters:
