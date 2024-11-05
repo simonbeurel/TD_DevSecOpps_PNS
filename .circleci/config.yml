@@ -297,27 +297,26 @@ jobs:
   phploc:
     executor: php-executor
     steps:
-      - steps:
-          - *attach_workspace
-          - run:
+        - *attach_workspace
+        - run:
             name: Get PHPLOC
             command: |
               wget https://phar.phpunit.de/phploc.phar
               php phploc.phar --version
               chmod +x phploc.phar
-          - run:
-              name: Run PHPLOC
-              command:
-                 php phploc.phar --ansi --report-xml=phploc-report.xml --report-html=phploc-report.html --report-json=phploc-report.json .
-          - store_artifacts:
-              path: phploc-report.xml
-              destination: phploc-report
-          - store_artifacts:
-              path: phploc-report.html
-              destination: phploc-report
-          - store_artifacts:
-              path: phploc-report.json
-              destination: phploc-report
+        - run:
+            name: Run PHPLOC
+            command:
+                php phploc.phar --ansi --report-xml=phploc-report.xml --report-html=phploc-report.html --report-json=phploc-report.json .
+        - store_artifacts:
+            path: phploc-report.xml
+            destination: phploc-report
+        - store_artifacts:
+            path: phploc-report.html
+            destination: phploc-report
+        - store_artifacts:
+            path: phploc-report.json
+            destination: phploc-report
 
 workflows:
   main_workflow:
