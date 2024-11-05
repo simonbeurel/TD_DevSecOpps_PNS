@@ -1,0 +1,48 @@
+Testing file: src/ImageCreator.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+/home/s1o/Polytech/TD_DevSecOpps_PNS/src/ImageCreator.php:17	Avoid variables with short names like $im. Configured minimum length is 3.
+PHPMD failed for rule: naming
+-----------------------------------
+Testing file: public/index.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+-----------------------------------
+Testing file: public/info.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+-----------------------------------
+Testing directory: src
+Testing file: src/ImageCreator.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+/home/s1o/Polytech/TD_DevSecOpps_PNS/src/ImageCreator.php:17	Avoid variables with short names like $im. Configured minimum length is 3.
+PHPMD failed for rule: naming
+-----------------------------------
+Testing directory: public
+Testing file: public/info.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+-----------------------------------
+Testing file: public/index.php
+Running PHPMD with rule: codesize
+-----------------------------------
+Running PHPMD with rule: unusedcode
+-----------------------------------
+Running PHPMD with rule: naming
+-----------------------------------
