@@ -232,13 +232,20 @@ jobs:
       - deploy:
           name: Deploy to Production
           command: |
-            ssh -o StrictHostKeyChecking=no -p 22 ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "echo 'Connected!'"
+            ssh -o StrictHostKeyChecking=no -p 22 ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com
+            echo "Done1"
             sudo su
+            echo "Done2"
             cd TD_DevSecOpps_PNS
+            echo "Done3"
             git pull 
+            echo "Done4"
             docker stop $(docker ps -q)
+            echo "Done5"
             docker build -f ./Docker/Dockerfile -t td_dev_secopps:latest .
+            echo "Done6"
             docker run -p 8080:80 -d td_dev_secopps:latest
+            echo "Done7"
 
 
 
