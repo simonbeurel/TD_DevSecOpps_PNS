@@ -321,7 +321,7 @@ workflows:
       - phpmetrics:
           requires:
             - build-setup
-      -phploc:
+      - phploc:
           requires:
             - build-setup
       - hold:
