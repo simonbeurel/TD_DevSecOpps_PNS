@@ -319,8 +319,11 @@ workflows:
           requires:
             - build-setup
       - phpmetrics:
-            requires:
-                - build-setup
+          requires:
+            - build-setup
+      -phploc:
+          requires:
+            - build-setup
       - hold:
           type: approval
           filters:
