@@ -99,7 +99,7 @@ jobs:
             composer require --dev niels-de-blaauw/php-doc-check
       - run:
           name: Run PHPMD
-          command: ./run_phpmd_tests.sh >> phpmd_report.txt
+          command: ./run_phpmd_tests.sh > phpmd_report.txt
       - run:
           name: Run PHP Doc Check
           command: ./vendor/bin/php-doc-check src > phpdoc_report.txt
