@@ -184,7 +184,7 @@ jobs:
             fi
 
             # Sanitize the repository name and branch name
-            REPOSITORY=$(echo "ghcr.io/simonbeurel/TD_DevSecOpps_PNS" | tr '[:upper:]' '[:lower:]' | tr -d '_')
+            REPOSITORY=$(echo "ghcr.io/$GHCR_USERNAME/$CIRCLE_REPONAME" | tr '[:upper:]' '[:lower:]' | tr -d '_')
             TAG=$(echo $CIRCLE_BRANCH | tr '[:upper:]' '[:lower:]' | tr '/' '-' | tr -cd '[:alnum:]._-' | cut -c 1-128)
 
             # Login to GHCR
