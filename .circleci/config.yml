@@ -184,13 +184,15 @@ jobs:
             fi
 
             # Sanitize the repository name and branch name
-            REPOSITORY=$(echo "ghcr.io/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]' | tr -d '_')
+            echo "Project: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+            REPOSITORY=$(echo "ghcr.io/simonbeurel/TD_DevSecOpps_PNS" | tr '[:upper:]' '[:lower:]' | tr -d '_')
             TAG=$(echo $CIRCLE_BRANCH | tr '[:upper:]' '[:lower:]' | tr '/' '-' | tr -cd '[:alnum:]._-' | cut -c 1-128)
-
+            
             # Login to GHCR
+            echo "Prepare the Image to be push to $REPOSITORY:$TAG"
             echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
-            # Build the Docker image
+            echo "Building the Image"
             docker build \
             -f Docker/Dockerfile \
             -t $REPOSITORY:$TAG \
@@ -200,10 +202,9 @@ jobs:
             --build-arg GIT_URL=$(echo ${CIRCLE_REPOSITORY_URL} | sed -e 's/^git@/https:\/\//g' -e 's/\.git$//g' -e 's/:/\//g') \
             --build-arg SQLITE_VERSION=3430200 \
             --build-arg SQLITE_YEAR=2023 \
-            --build-arg PROJECT_USERNAME=$CIRCLE_PROJECT_USERNAME \
+            --build-arg PROJECT_USERNAME=TD_DevSecOpps_PNS \
             .
-
-            # Push the Docker image
+            echo "Pushing the Image to $REPOSITORY:$TAG"
             docker push $REPOSITORY:$TAG
 
 
@@ -217,6 +218,7 @@ jobs:
           name: Deploy to AWS
           command: |
             set -x
+            echo "*********************"
             ssh -o StrictHostKeyChecking=no $STAGING_SSH_USER@$STAGING_SSH_HOST \<< EOF
             PHP_FPM_VERSION=$(php -v | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1-2)
             cd $STAGING_DEPLOY_DIRECTORY
