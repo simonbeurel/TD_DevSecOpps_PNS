@@ -229,6 +229,10 @@ jobs:
             --build-arg PROJECT_USERNAME=$CIRCLE_PROJECT_USERNAME \
             .
 
+            #Echo data for visualize
+            echo "REPOSITORY: $REPOSITORY"
+            echo "TAG: $TAG"
+
             # Push the Docker image
             docker push $REPOSITORY:$TAG
 
