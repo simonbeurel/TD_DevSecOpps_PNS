@@ -307,16 +307,7 @@ jobs:
         - run:
             name: Run PHPLOC
             command:
-                php phploc.phar --report-xml=phploc-report.xml --report-html=phploc-report.html --report-json=phploc-report.json .
-        - store_artifacts:
-            path: phploc-report.xml
-            destination: phploc-report
-        - store_artifacts:
-            path: phploc-report.html
-            destination: phploc-report
-        - store_artifacts:
-            path: phploc-report.json
-            destination: phploc-report
+                php phploc.phar .
 
 workflows:
   main_workflow:
