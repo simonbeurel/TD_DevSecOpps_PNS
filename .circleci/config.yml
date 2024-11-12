@@ -375,5 +375,11 @@ workflows:
       - quality_check:
           requires:
             - build-setup
+      - phpmetrics:
+          requires:
+            - build-setup
+      - lint-phpcs:
+          requires:
+            - build-setup
 
           
