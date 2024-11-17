@@ -290,17 +290,10 @@ jobs:
             echo "Done1"
             sudo su
             echo "Done2"
-            curl -1sLf \
-            'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' \
-            | sudo -E bash
-            sudo apt-get update && sudo apt-get install -y infisical
-            curl --location --request POST 'https://app.infisical.com/api/v1/auth/universal-auth/login' \
-            --header 'Content-Type: application/x-www-form-urlencoded' \
-            --data-urlencode 'clientId=28fdef1f-88e9-48cc-a17e-1fb501e92a4a' \
-            --data-urlencode 'clientSecret=d18667de3986eba026f6c7f3a2b5c736020dfdb0adcc270d1cabf26a52b8fab1'
-            infisical login --method=universal-auth --client-id=28fdef1f-88e9-48cc-a17e-1fb501e92a4a --client-secret=d18667de3986eba026f6c7f3a2b5c736020dfdb0adcc270d1cabf26a52b8fab1
-            eval \$(infisical export --format=dotenv)
-            echo "APP_SECRET: \$APP_SECRET"
+            curl -sSL https://api.infisical.com/v1/secrets -H "Authorization: Bearer $INFISICAL_API_KEY" -o secrets.json
+            export $(cat secrets.json | jq -r 'to_entries | .[] | "\(.key)=\(.value)"')
+            echo "Utilisation du secret "
+            echo $APP_SECRET  # Exemple d'utilisation d'un secret
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done3"
             docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
