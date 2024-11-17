@@ -396,20 +396,6 @@ jobs:
 
 workflows:
 
-  container_workflow:
-    jobs:
-      - build-docker-image:
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
-                - /^feature\/.*/
-                - /^release\/.*/
-                - /^hotfix\/.*/
-                - /^bugfix\/.*/
-
   metrics_workflow:
     jobs:
       - debug-info
@@ -498,6 +484,17 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
+      - build-docker-image:
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
+                - /^feature\/.*/
+                - /^release\/.*/
+                - /^hotfix\/.*/
+                - /^bugfix\/.*/
       - hold-for-deployment:
           type: approval
           requires:
