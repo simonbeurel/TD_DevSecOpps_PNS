@@ -283,20 +283,20 @@ jobs:
           name: Deploy to Staging
           command: |
             echo "Deploy on staging server...."
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com << EOF
             echo "Done1"
             sudo su
             echo "Done2"
-            docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
+            eval \$(infisical export --format=dotenv)
             echo "Done3"
-            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done4"
-            docker run -d \
-              -p 8090:80 \
-              --env-file <(infisical export --format=dotenv) \
-              ghcr.io/simonbeurel/tddevsecoppspns:staging
+            docker stop \$(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
             echo "Done5"
+            docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
+            echo "Done6"
             EOF
+
 
 
   deploy-ssh-production:
@@ -510,7 +510,4 @@ workflows:
             branches:
               only:
                 - staging
-
-  
-
           
