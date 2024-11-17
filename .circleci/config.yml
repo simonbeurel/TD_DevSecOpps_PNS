@@ -485,11 +485,20 @@ workflows:
   #Workflow de déploiement
   deployment_workflow:
     jobs:
-      - build-setup
+      - build-setup:
+        filters:
+          only:
+            - main
+            - staging
       - hold-for-deployment:
           type: approval
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
       - deploy-ssh-production:
           requires:
             - hold-for-deployment
