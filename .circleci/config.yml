@@ -110,9 +110,6 @@ jobs:
           path: phpdoc_report.txt
           destination: phpdoc_report.txt
 
-
-
-
   build-setup:
     executor: php-executor
     steps:
@@ -294,7 +291,10 @@ jobs:
             echo "Done3"
             docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
             echo "Done4"
-            docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
+            docker run -d \
+              -p 8090:80 \
+              --env-file <(infisical export --format=dotenv) \
+              ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done5"
             EOF
 
