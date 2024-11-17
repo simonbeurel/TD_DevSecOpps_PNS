@@ -367,8 +367,12 @@ jobs:
       - run:
           name: Install Trivy
           command: |
-            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-            sudo mv trivy /usr/local/bin/trivy
+            # Télécharger Trivy dans le répertoire bin
+            curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.57.0/trivy_0.57.0_Linux-64bit.tar.gz -o trivy.tar.gz
+            # Extraire le fichier téléchargé
+            tar zxvf trivy.tar.gz
+            # Déplacer l'exécutable dans /usr/local/bin pour qu'il soit accessible globalement
+            sudo mv trivy /usr/local/bin/
       - run:
           name: Build Docker Image
           command: |
