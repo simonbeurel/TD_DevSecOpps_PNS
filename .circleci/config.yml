@@ -319,27 +319,7 @@ jobs:
             destination: result_phploc
 
 workflows:
-  main_workflow:
-    jobs:
-      - debug-info
-      - build-setup
-      - lint-phpcs:
-          requires:
-            - build-setup
-      - security-check-dependencies:
-          requires:
-            - build-setup
-      - test-phpunit:
-          requires:
-            - build-setup
-      - phpmetrics:
-          requires:
-            - build-setup
-      - phploc:
-          requires:
-            - build-setup
-
-
+  
   container_workflow:
     jobs:
       - build-docker-image:
