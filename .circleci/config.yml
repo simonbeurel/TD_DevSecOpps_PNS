@@ -398,7 +398,7 @@ jobs:
           name: Setup Infisical and Login
           command: |
             mkdir -p .env 
-            export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=$INFISICAL_CLIENT_ID --client-secret=$INFISICAL_CLIENT_SECRET --silent --plain)
+            export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=9806ba80-f340-42bb-9fff-507c125a0e29 --client-secret=2336a0584ba69e33d78264e4ef96376f332482f140842a56d1da2e413d7d6a16  --silent --plain)
             echo "INFISICAL_TOKEN   $INFISICAL_TOKEN" 
             echo "INFISICAL_PROJECT_ID  $INFISICAL_PROJECT_ID"
             
