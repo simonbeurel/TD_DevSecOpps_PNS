@@ -407,17 +407,7 @@ workflows:
   metrics_workflow:
     jobs:
       - debug-info:
-        filters:
-          only:
-            - main
-            - staging
-            - develop
       - build-setup:
-        filters:
-          only:
-            - main
-            - staging
-            - develop
       - quality_check:
           requires:
             - build-setup
@@ -496,14 +486,14 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup:
-        filters:
-          only:
-            - main
-            - staging
       - hold-for-deployment:
           type: approval
           requires:
             - build-setup
+          filters:
+            only:
+              - main
+              - staging
       - deploy-ssh-production:
           requires:
             - hold-for-deployment
