@@ -294,7 +294,7 @@ jobs:
             echo "Done3"
             git pull 
             echo "Done4"
-            CONTAINER_ID=$(docker ps -q --filter "ancestor=td_dev_secopps:staging")
+            CONTAINER_ID=$(docker ps -q --filter "publish=8090" --filter "status=running")
             if [ -n "$CONTAINER_ID" ]; then
               echo "Stopping container with ID: $CONTAINER_ID"
               docker stop $CONTAINER_ID
