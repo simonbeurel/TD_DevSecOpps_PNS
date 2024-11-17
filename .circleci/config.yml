@@ -360,6 +360,27 @@ jobs:
             path: result_phploc.txt
             destination: result_phploc
 
+  security-docker-image:
+    executor: simple-executor
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install Trivy
+          command: |
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+            sudo mv trivy /usr/local/bin/trivy
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -f Docker/Dockerfile -t image_test:latest .
+      - run:
+          name: Scan Docker Image with Trivy
+          command: |
+            trivy image --no-progress image_test:latest > trivy_results.txt
+      - store_artifacts:
+          path: trivy_results.txt
+          destination: trivy_scan_results
+
 workflows:
 
   container_workflow:
@@ -398,6 +419,9 @@ workflows:
       - debug-info
       - build-setup
       - security-check-dependencies:
+          requires:
+            - build-setup
+      - security-docker-image:
           requires:
             - build-setup
 
