@@ -510,6 +510,7 @@ workflows:
       - deploy-ssh-production:
           requires:
             - hold-for-deployment
+            - build-docker-image
           filters:
             branches:
               only:
@@ -517,6 +518,7 @@ workflows:
       - deploy-ssh-staging:
           requires:
             - hold-for-deployment
+            - build-docker-image
           filters:
             branches:
               only:
