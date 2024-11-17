@@ -409,7 +409,7 @@ jobs:
 
             if [ "$INFISICAL_TOKEN" == "null" ] || [ -z "$INFISICAL_TOKEN" ]; then
               echo "Error: Failed to retrieve INFISICAL_TOKEN"
-              echo "Response: $RESPONSE"
+              echo "Response: $RESPONSE "
               exit 1
             fi
             
