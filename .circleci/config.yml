@@ -290,6 +290,8 @@ jobs:
             echo "Done1"
             sudo su
             echo "Done2"
+            eval \$(infisical export --format=dotenv)
+            echo "APP_SECRET: \$APP_SECRET"
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done3"
             docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
@@ -310,7 +312,6 @@ jobs:
             echo "Done1"
             sudo su
             echo "Done2"
-            eval \$(infisical export --format=dotenv)
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done3"
             docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
