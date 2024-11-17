@@ -401,24 +401,20 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
-      - hold-for-production:
+      - hold-for-deployment:
           type: approval
           requires:
             - build-setup
       - deploy-ssh-production:
           requires:
-            - hold-for-production
+            - hold-for-deployment
           filters:
             branches:
               only:
                 - main
-      - hold-for-staging:
-          type: approval
-          requires:
-            - build-setup
       - deploy-ssh-staging:
           requires:
-            - hold-for-staging
+            - hold-for-deployment
           filters:
             branches:
               only:
