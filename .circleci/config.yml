@@ -406,8 +406,18 @@ workflows:
 
   metrics_workflow:
     jobs:
-      - debug-info
-      - build-setup
+      - debug-info:
+        filters:
+          only:
+            - main
+            - staging
+            - develop
+      - build-setup:
+        filters:
+          only:
+            - main
+            - staging
+            - develop
       - quality_check:
           requires:
             - build-setup
