@@ -396,8 +396,8 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - main
+                - staging
                 - develop
                 - /^feature\/.*/
                 - /^release\/.*/
@@ -411,21 +411,39 @@ workflows:
       - quality_check:
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
       - phpmetrics:
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
       - lint-phpcs:
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
       - phploc:
           requires:
             - build-setup
-      filters:
-        branches:
-          only:
-            - develop
-            - staging
-            - main
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
 
   security_workflow:
     jobs:
