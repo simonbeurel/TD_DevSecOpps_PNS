@@ -418,6 +418,27 @@ workflows:
           requires:
             - build-setup
 
+  #Workflow de déploiement
+  deploy:
+      - jobs:
+        - build-setup
+        - deploy-ssh-production:
+          requires:
+              - build-setup
+              - hold
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-ssh-staging:
+          requires:
+            - build-setup
+            - hold
+          filters:
+            branches:
+              only:
+                - staging
+
   
 
           
