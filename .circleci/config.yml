@@ -313,7 +313,10 @@ jobs:
         - run:
             name: Run PHPLOC
             command:
-                php phploc.phar .
+                php phploc.phar . > result_phploc.txt
+        - store_artifacts:
+            path: result_phploc.txt
+            destination: result_phploc
 
 workflows:
   main_workflow:
