@@ -282,20 +282,30 @@ jobs:
   deploy-ssh-staging:
     executor: simple-executor
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "${STAGING_SSH_FINGERPRINT}"
       - deploy:
-          name: Deploy to AWS
+          name: Deploy to Staging
           command: |
             echo "Deploy on staging server...."
-            set -x
-            ssh -o StrictHostKeyChecking=no $STAGING_SSH_USER@$STAGING_SSH_HOST \<< EOF
-            PHP_FPM_VERSION=$(php -v | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1-2)
-            cd $STAGING_DEPLOY_DIRECTORY
-            git pull origin $CIRCLE_BRANCH
-            composer install --optimize-autoloader --no-interaction --prefer-dist
-            (flock -w 10 9 || exit 1; sudo -S service php${PHP_FPM_VERSION}-fpm restart ) 9>/tmp/fpm.lock
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            echo "Done1"
+            sudo su
+            echo "Done2"
+            cd TD_DevSecOpps_PNS
+            echo "Done3"
+            git pull 
+            echo "Done4"
+            CONTAINER_ID=$(docker ps -q --filter "ancestor=td_dev_secopps:staging")
+            if [ -n "$CONTAINER_ID" ]; then
+              echo "Stopping container with ID: $CONTAINER_ID"
+              docker stop $CONTAINER_ID
+            else
+              echo "No container found for image td_dev_secopps:staging"
+            fi
+            echo "Done5"
+            docker build -f ./Docker/Dockerfile -t td_dev_secopps:staging .
+            echo "Done6"
+            docker run -p 8090:80 -d td_dev_secopps:staging
+            echo "Done7"
             EOF
 
 
@@ -455,6 +465,12 @@ workflows:
       - security-docker-image:
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main 
+                - staging
+                - develop 
 
   # Workflow de Tests
   tests_workflow:
