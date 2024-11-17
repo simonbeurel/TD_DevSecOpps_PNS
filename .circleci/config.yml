@@ -405,45 +405,28 @@ workflows:
                 - /^bugfix\/.*/
 
   metrics_workflow:
-    jobs:
-      - debug-info
-      - build-setup
-      - quality_check:
-          requires:
-            - build-setup
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
-      - phpmetrics:
-          requires:
-            - build-setup
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
-      - lint-phpcs:
-          requires:
-            - build-setup
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
-      - phploc:
-          requires:
-            - build-setup
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
+  filters:
+    branches:
+      only:
+        - main
+        - staging
+        - develop
+  jobs:
+    - debug-info
+    - build-setup
+    - quality_check:
+        requires:
+          - build-setup
+    - phpmetrics:
+        requires:
+          - build-setup
+    - lint-phpcs:
+        requires:
+          - build-setup
+    - phploc:
+        requires:
+          - build-setup
+
 
   security_workflow:
     jobs:
