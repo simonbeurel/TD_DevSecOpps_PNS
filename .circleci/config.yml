@@ -386,4 +386,38 @@ workflows:
           requires:
             - build-setup
 
+  security_workflow:
+    jobs:
+      - debug-info
+      - build-setup
+      - security-check-dependencies:
+          requires:
+            - build-setup
+
+  # Workflow de Documentation
+  documentation_workflow:
+    jobs:
+      - debug-info
+      - build-setup
+      - quality_check:
+          requires:
+            - build-setup
+      - phpmetrics:
+          requires:
+            - build-setup
+      - lint-phpcs:
+          requires:
+            - build-setup
+
+  # Workflow de Tests
+  tests_workflow:
+    jobs:
+      - debug-info
+      - build-setup
+      - test-phpunit:
+          requires:
+            - build-setup
+
+  
+
           
