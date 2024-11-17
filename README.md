@@ -2,3 +2,4 @@
 
 Test trigger pipeline
 Test trigger branch featureXXX
+Test trigger branch develop
