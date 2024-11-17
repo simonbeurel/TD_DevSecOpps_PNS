@@ -42,6 +42,8 @@ class ImageCreator
         if (!empty($_ENV['APP_SECRET'])) {
             $this->text2 .= ' (secret: ' . $_ENV['APP_SECRET'] . ')';
         }
+        else {
+            $this->text2 .= ' (secret: vide apparament pour le moment.)';
 
         // La police
         $this->font = dirname(__DIR__) . '/public/font/consolas.ttf';
