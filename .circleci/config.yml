@@ -290,22 +290,12 @@ jobs:
             echo "Done1"
             sudo su
             echo "Done2"
-            cd TD_DevSecOpps_PNS
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done3"
-            git pull 
+            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
             echo "Done4"
-            CONTAINER_ID=$(docker ps -q --filter "ancestor=td_dev_secopps:staging")
-            if [ -n "$CONTAINER_ID" ]; then
-              echo "Stopping container with ID: $CONTAINER_ID"
-              docker stop $CONTAINER_ID
-            else
-              echo "No container found for image td_dev_secopps:staging"
-            fi
+            docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
             echo "Done5"
-            docker build -f ./Docker/Dockerfile -t td_dev_secopps:staging .
-            echo "Done6"
-            docker run -p 8090:80 -d td_dev_secopps:staging
-            echo "Done7"
             EOF
 
 
@@ -320,22 +310,12 @@ jobs:
             echo "Done1"
             sudo su
             echo "Done2"
-            cd TD_DevSecOpps_PNS
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done3"
-            git pull 
+            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
             echo "Done4"
-            CONTAINER_ID=$(docker ps -q --filter "ancestor=td_dev_secopps:latest")
-            if [ -n "$CONTAINER_ID" ]; then
-              echo "Stopping container with ID: $CONTAINER_ID"
-              docker stop $CONTAINER_ID
-            else
-              echo "No container found for image td_dev_secopps:latest"
-            fi
+            docker run -d -p 8080:80 ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done5"
-            docker build -f ./Docker/Dockerfile -t td_dev_secopps:latest .
-            echo "Done6"
-            docker run -p 8080:80 -d td_dev_secopps:latest
-            echo "Done7"
             EOF
 
   phpmetrics:
@@ -405,20 +385,6 @@ jobs:
           destination: trivy_scan_results
 
 workflows:
-
-  container_workflow:
-    jobs:
-      - build-docker-image:
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
-                - /^feature\/.*/
-                - /^release\/.*/
-                - /^hotfix\/.*/
-                - /^bugfix\/.*/
 
   metrics_workflow:
     jobs:
@@ -508,6 +474,17 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
+      - build-docker-image:
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
+                - /^feature\/.*/
+                - /^release\/.*/
+                - /^hotfix\/.*/
+                - /^bugfix\/.*/
       - hold-for-deployment:
           type: approval
           requires:
@@ -520,6 +497,7 @@ workflows:
       - deploy-ssh-production:
           requires:
             - hold-for-deployment
+            - build-docker-image
           filters:
             branches:
               only:
@@ -527,6 +505,7 @@ workflows:
       - deploy-ssh-staging:
           requires:
             - hold-for-deployment
+            - build-docker-image
           filters:
             branches:
               only:
