@@ -398,7 +398,17 @@ jobs:
           name: Setup Infisical and Login
           command: |
             mkdir -p .env 
-            export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=126e38c4-14b4-4303-956e-351bd87ccd3a --client-secret=3d373a920e34e352fb34e5620107a7510f971dc105a069dadb9239f12d45d811  --silent --plain)
+            export INFISICAL_TOKEN=$(infisical login \
+              --method=universal-auth \
+              --client-id=126e38c4-14b4-4303-956e-351bd87ccd3a \
+              --client-secret=3d373a920e34e352fb34e5620107a7510f971dc105a069dadb9239f12d45d811 \
+              --silent --plain)
+
+            if [ -z "$INFISICAL_TOKEN" ]; then
+              echo "Error: Failed to retrieve INFISICAL_TOKEN"
+              exit 1
+            fi
+            
             echo "INFISICAL_TOKEN   $INFISICAL_TOKEN" 
             echo "INFISICAL_PROJECT_ID  $INFISICAL_PROJECT_ID"
             
