@@ -294,6 +294,10 @@ jobs:
             'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' \
             | sudo -E bash
             sudo apt-get update && sudo apt-get install -y infisical
+            curl --location --request POST 'https://app.infisical.com/api/v1/auth/universal-auth/login' \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'clientId=9433162e-c737-4cca-a54e-3f6ae979485b' \
+            --data-urlencode 'clientSecret=93ba0560712c5f61cdb17453600b32667e157f4704fd20b310bd5531e849b578'
             infisical login --method=universal-auth --client-id=9433162e-c737-4cca-a54e-3f6ae979485b --client-secret=93ba0560712c5f61cdb17453600b32667e157f4704fd20b310bd5531e849b578
             eval \$(infisical export --format=dotenv)
             echo "APP_SECRET: \$APP_SECRET"
