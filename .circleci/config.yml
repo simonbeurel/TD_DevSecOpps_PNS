@@ -211,6 +211,29 @@ jobs:
       - run:
           name: Run Feature Tests
           command: ./vendor/bin/phpunit --testsuite=Feature
+  
+  test-end-to-end:
+    executor: php-executor
+    steps:
+      - *attach_workspace
+      - run:
+          name: Check if E2E folder exists
+          command: |
+            if [ ! -d "tests/E2E" ]; then
+              echo "E2E folder not found, skipping job."
+              circleci step halt
+            fi
+      - run:
+          name: Run all E2E scripts
+          command: |
+            for script in tests/E2E/*.sh; do
+              if [ -x "$script" ]; then
+                echo "Executing $script..."
+                bash "$script" || exit 1
+              else
+                echo "Skipping non-executable script: $script"
+              fi
+            done
 
 
   build-docker-image:
@@ -395,6 +418,14 @@ workflows:
                 - main
                 - staging
                 - develop
+      - test-end-to-end:
+          requires:
+            - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
 
   #Workflow de déploiement
   deployment_workflow:
