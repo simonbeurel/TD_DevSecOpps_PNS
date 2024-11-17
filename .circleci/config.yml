@@ -192,6 +192,25 @@ jobs:
       - run:
           name: Run PHPUnit
           command: ./vendor/bin/phpunit --testsuite=Unit
+  
+  test-phpunit-feature:
+    executor: php-executor
+    steps:
+      - *attach_workspace
+      - run:
+          name: Check if PHPUnit tests are present, otherwise skip the job
+          command: |
+            if [ ! -f "phpunit.xml" ]; then
+              echo "No PHPUnit tests found, skipping job."
+              echo "export SKIP_PHPUNIT=true" >> $BASH_ENV
+              circleci step halt
+            fi
+      - run:
+          name: Install PHPUnit
+          command: composer require --dev phpunit/phpunit
+      - run:
+          name: Run Feature Tests
+          command: ./vendor/bin/phpunit --testsuite=Feature
 
 
   build-docker-image:
@@ -319,7 +338,7 @@ jobs:
             destination: result_phploc
 
 workflows:
-  
+
   container_workflow:
     jobs:
       - build-docker-image:
@@ -367,6 +386,15 @@ workflows:
       - test-phpunit:
           requires:
             - build-setup
+      - test-phpunit-feature:
+          requires:
+            - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
 
   #Workflow de déploiement
   deployment_workflow:
