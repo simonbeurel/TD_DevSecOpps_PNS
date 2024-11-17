@@ -455,6 +455,12 @@ workflows:
       - security-docker-image:
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main 
+                - staging
+                - develop 
 
   # Workflow de Tests
   tests_workflow:
