@@ -111,25 +111,25 @@ jobs:
           destination: phpdoc_report.txt
 
   setup-env-from-infisical:
-  executor: php-executor
-  steps:
-    - run:
-        name: Install Infisical CLI
-        command: |
-          curl -fsSL https://infisical.com/install.sh | bash
-          infisical --version
-    - run:
-        name: Login to Infisical
-        command: |
-          infisical login --api-key $INFISICAL_API_KEY
-    - run:
-        name: Fetch APP_SECRET from Infisical
-        command: |
-          APP_SECRET=$(infisical read APP_SECRET --plain)
-          echo "APP_SECRET=$APP_SECRET" > .env
-    - store_artifacts:
-        path: .env
-        destination: environment_variables
+    executor: php-executor
+    steps:
+      - run:
+          name: Install Infisical CLI
+          command: |
+            curl -fsSL https://infisical.com/install.sh | bash
+            infisical --version
+      - run:
+          name: Login to Infisical
+          command: |
+            infisical login --api-key $INFISICAL_API_KEY
+      - run:
+          name: Fetch APP_SECRET from Infisical
+          command: |
+            APP_SECRET=$(infisical read APP_SECRET --plain)
+            echo "APP_SECRET=$APP_SECRET" > .env
+      - store_artifacts:
+          path: .env
+          destination: environment_variables
 
 
   build-setup:
