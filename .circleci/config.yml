@@ -426,7 +426,7 @@ workflows:
           - develop
           - staging
           - main
-
+          
   security_workflow:
     jobs:
       - debug-info
