@@ -490,6 +490,11 @@ workflows:
           type: approval
           requires:
             - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
       - deploy-ssh-production:
           requires:
             - hold-for-deployment
