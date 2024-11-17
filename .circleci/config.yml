@@ -420,6 +420,12 @@ workflows:
       - phploc:
           requires:
             - build-setup
+    filters:
+      branches:
+        only:
+          - develop
+          - staging
+          - main
 
   security_workflow:
     jobs:
