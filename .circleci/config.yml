@@ -324,7 +324,13 @@ jobs:
             echo "Done3"
             git pull 
             echo "Done4"
-            docker stop $(docker ps -q)
+            CONTAINER_ID=$(docker ps -q --filter "ancestor=td_dev_secopps:latest")
+            if [ -n "$CONTAINER_ID" ]; then
+              echo "Stopping container with ID: $CONTAINER_ID"
+              docker stop $CONTAINER_ID
+            else
+              echo "No container found for image td_dev_secopps:latest"
+            fi
             echo "Done5"
             docker build -f ./Docker/Dockerfile -t td_dev_secopps:latest .
             echo "Done6"
