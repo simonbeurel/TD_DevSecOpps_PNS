@@ -335,14 +335,6 @@ workflows:
       - phploc:
           requires:
             - build-setup
-      - hold:
-          type: approval
-          filters:
-            branches:
-              only:
-                - main
-                - master
-                - /^release\/.*/
 
 
   container_workflow:
@@ -409,25 +401,24 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
-      - hold:
-        type: approval
-        filters:
-          branches:
-            only:
-              - main
-              - staging
-      - deploy-ssh-production:
+      - hold-for-production:
+          type: approval
           requires:
             - build-setup
-            - hold
+      - deploy-ssh-production:
+          requires:
+            - hold-for-production
           filters:
             branches:
               only:
                 - main
-      - deploy-ssh-staging:
+      - hold-for-staging:
+          type: approval
           requires:
             - build-setup
-            - hold
+      - deploy-ssh-staging:
+          requires:
+            - hold-for-staging
           filters:
             branches:
               only:
