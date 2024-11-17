@@ -110,6 +110,9 @@ jobs:
           path: phpdoc_report.txt
           destination: phpdoc_report.txt
 
+
+
+
   build-setup:
     executor: php-executor
     steps:
@@ -276,29 +279,24 @@ jobs:
             docker push $REPOSITORY:$TAG
 
 
-deploy-ssh-staging:
-  executor: simple-executor
-  steps:
-    - deploy:
-        name: Deploy to Staging
-        command: |
-          echo "Deploy on staging server...."
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com << EOF
-          echo "Done1"
-          sudo su
-          echo "Done2"
-          # Exporter les secrets via Infisical et charger dans le shell
-          eval \$(infisical export --format=dotenv)
-          echo "Done3"
-          docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
-          echo "Done4"
-          docker stop \$(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
-          echo "Done5"
-          # Lancer le conteneur Docker avec les variables d'environnement
-          docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
-          echo "Done6"
-          EOF
-
+  deploy-ssh-staging:
+    executor: simple-executor
+    steps:
+      - deploy:
+          name: Deploy to Staging
+          command: |
+            echo "Deploy on staging server...."
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            echo "Done1"
+            sudo su
+            echo "Done2"
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
+            echo "Done3"
+            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
+            echo "Done4"
+            docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
+            echo "Done5"
+            EOF
 
 
   deploy-ssh-production:
@@ -312,6 +310,7 @@ deploy-ssh-staging:
             echo "Done1"
             sudo su
             echo "Done2"
+            eval \$(infisical export --format=dotenv)
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done3"
             docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
@@ -512,4 +511,7 @@ workflows:
             branches:
               only:
                 - staging
+
+  
+
           
