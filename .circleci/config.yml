@@ -477,15 +477,6 @@ workflows:
                 - main
                 - staging
                 - develop
-      - configure-infisical:
-          requires:
-            - build-setup
-          filters:
-            branches:
-              only:
-                - main
-                - staging
-                - develop
 
   security_workflow:
     jobs:
@@ -534,6 +525,15 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
+      - configure-infisical:
+          requires:
+            - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
       - build-docker-image:
           filters:
             branches:
