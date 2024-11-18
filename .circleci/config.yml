@@ -293,9 +293,9 @@ jobs:
             sudo su
             
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
-            docker ps
-            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging") || true
-            docker rm $(docker ps -aq --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging") || true
+            docker ps -a
+            docker stop $CIRCLE_PROJECT_USERNAME || true
+            docker rm $CIRCLE_PROJECT_USERNAME || true
             
             echo "Done2"
             docker run -d \
@@ -434,7 +434,7 @@ jobs:
       - persist_to_workspace:
             root: .
             paths:
-                - .env
+                - .env/
 
 workflows:
   metrics_workflow:
