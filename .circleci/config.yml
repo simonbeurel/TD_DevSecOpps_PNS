@@ -298,8 +298,8 @@ jobs:
             
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
             docker ps -a
-            docker stop $CIRCLE_PROJECT_USERNAME || true
-            docker rm $CIRCLE_PROJECT_USERNAME || true
+            docker stop tddevsecoppspns-staging 
+            docker rm tddevsecoppspns-staging 
             
             echo "Done2"
             docker run -d \
@@ -326,13 +326,13 @@ jobs:
             echo "Done1"
             sudo su
             
-            docker pull ghcr.io/simonbeurel/tddevsecoppspns:main 
-            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
-            docker rm $(docker ps -aq --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:main             
+            docker stop tddevsecoppspns-prod
+            docker rm tddevsecoppspns-prod
             
             echo "Done2"
             docker run -d \
-              --name tddevsecoppspns-main \
+              --name tddevsecoppspns-prod \
               --env-file /home/ubuntu/.env \
               -p 8080:80 \
               --restart unless-stopped \
