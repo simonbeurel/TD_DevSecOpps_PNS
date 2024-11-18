@@ -324,11 +324,22 @@ jobs:
   deploy-ssh-production:
     executor: simple-executor
     steps:
+      - *attach_workspace
+      - run:
+          name: Debug Workspace
+          command: |
+            echo "Current directory structure:"
+            pwd
+            ls -la
+            echo "Content of .env directory:"
+            ls -la .env/
       - deploy:
           name: Deploy to Production
           command: |
             echo "Deploy on production server...."
-            scp -P 22 -o StrictHostKeyChecking=no .env/prod.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/.env
+            
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/prod"
+            scp -P 22 -o StrictHostKeyChecking=no .env/prod.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/prod/.env || echo "Error copying .env file"
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
             
             echo "Done1"
@@ -341,7 +352,7 @@ jobs:
             echo "Done2"
             docker run -d \
               --name tddevsecoppspns-prod \
-              --env-file /home/ubuntu/.env \
+              --env-file /home/ubuntu/prod/.env \
               -p 8080:80 \
               --restart unless-stopped \
               ghcr.io/simonbeurel/tddevsecoppspns:main
