@@ -312,9 +312,10 @@ jobs:
             echo "Done2"
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done3"
-            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:main")
+            docker stop tddevsecoppspns-prod
+            docker remove tddevsecoppspns-prod
             echo "Done4"
-            docker run -d -p 8080:80 ghcr.io/simonbeurel/tddevsecoppspns:main
+            docker run -d -p 8080:80 --name tddevsecoppspns-prod ghcr.io/simonbeurel/tddevsecoppspns:main
             echo "Done5"
             EOF
 
