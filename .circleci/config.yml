@@ -283,28 +283,36 @@ jobs:
     executor: simple-executor
     steps:
       - *attach_workspace
+      - run:
+          name: Debug Workspace
+          command: |
+            echo "Current directory structure:"
+            pwd
+            ls -la
+            echo "Content of .env directory:"
+            ls -la .env/
       - deploy:
           name: Deploy to Staging
           command: |
             echo "Deploy on staging server...."
-            echo "Listing files before persisting:"
-            ls -al .env/
+            echo "Verifying staging.env content before deployment:"
+            cat .env/staging.env || echo "Error: Cannot read staging.env"
             
-            scp -P 22 -o StrictHostKeyChecking=no .env/staging.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/.env
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/staging"
+            scp -P 22 -o StrictHostKeyChecking=no .env/staging.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/staging/.env || echo "Error copying .env file"
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
             
             echo "Done1"
             sudo su
             
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
-            docker ps -a
             docker stop tddevsecoppspns-staging 
             docker rm tddevsecoppspns-staging 
             
             echo "Done2"
             docker run -d \
               --name tddevsecoppspns-staging \
-              --env-file /home/ubuntu/.env \
+              --env-file /home/ubuntu/staging/.env \
               -p 8090:80 \
               --restart unless-stopped \
               ghcr.io/simonbeurel/tddevsecoppspns:staging
@@ -427,14 +435,11 @@ jobs:
             
             infisical export --domain=https://eu.infisical.com --env=staging --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/staging.env
             infisical export --domain=https://eu.infisical.com --env=prod --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/prod.env
-            infisical export --domain=https://eu.infisical.com --env=dev --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/dev.env
             
             echo "Staging secrets"
             cat .env/staging.env
             echo "Prod secrets"
             cat .env/prod.env
-            echo "Dev secrets"
-            cat .env/dev.env
       - persist_to_workspace:
             root: .
             paths:
@@ -565,6 +570,7 @@ workflows:
           requires:
             - hold-for-deployment
             - build-docker-image
+            - configure-infisical
           filters:
             branches:
               only:
@@ -573,6 +579,7 @@ workflows:
           requires:
             - hold-for-deployment
             - build-docker-image
+            - configure-infisical
           filters:
             branches:
               only:
