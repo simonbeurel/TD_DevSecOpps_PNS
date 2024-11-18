@@ -404,9 +404,9 @@ jobs:
             echo "INFISICAL_TOKEN   $INFISICAL_TOKEN" 
             echo "INFISICAL_PROJECT_ID  $INFISICAL_PROJECT_ID"
             
-            infisical export --env=staging --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/staging.env
-            infisical export --env=prod --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/prod.env
-            infisical export --env=dev --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/dev.env
+            infisical export --domain=https://eu.infisical.com --env=staging --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/staging.env
+            infisical export --domain=https://eu.infisical.com --env=prod --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/prod.env
+            infisical export --domain=https://eu.infisical.com --env=dev --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/dev.env
             
             echo "Staging secrets"
             cat .env/staging.env
