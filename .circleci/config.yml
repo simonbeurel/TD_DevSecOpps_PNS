@@ -398,20 +398,8 @@ jobs:
           name: Setup Infisical and Login
           command: |
             mkdir -p .env 
-            # Effectuer la requête curl pour récupérer l'access token
-            RESPONSE=$(curl --location --silent --request POST 'https://eu.infisical.com/api/v1/auth/universal-auth/login' \
-              --header 'Content-Type: application/x-www-form-urlencoded' \
-              --data-urlencode 'clientId=126e38c4-14b4-4303-956e-351bd87ccd3a' \
-              --data-urlencode 'clientSecret=3d373a920e34e352fb34e5620107a7510f971dc105a069dadb9239f12d45d811')
-
-            # Extraire l'access token depuis la réponse JSON
-            export INFISICAL_TOKEN=$(echo $RESPONSE | jq -r '.accessToken')
-
-            if [ "$INFISICAL_TOKEN" == "null" ] || [ -z "$INFISICAL_TOKEN" ]; then
-              echo "Error: Failed to retrieve INFISICAL_TOKEN"
-              echo "Response: $RESPONSE "
-              exit 1
-            fi
+            export INFISICAL_TOKEN=$(infisical login --domain=https://eu.infisical.com --method=universal-auth --client-id=126e38c4-14b4-4303-956e-351bd87ccd3a --client-secret=3d373a920e34e352fb34e5620107a7510f971dc105a069dadb9239f12d45d811  --silent --plain)
+           
             
             echo "INFISICAL_TOKEN   $INFISICAL_TOKEN" 
             echo "INFISICAL_PROJECT_ID  $INFISICAL_PROJECT_ID"
