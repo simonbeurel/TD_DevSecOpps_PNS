@@ -282,41 +282,84 @@ jobs:
   deploy-ssh-staging:
     executor: simple-executor
     steps:
+      - *attach_workspace
+      - run:
+          name: Debug Workspace
+          command: |
+            echo "Current directory structure:"
+            pwd
+            ls -la
+            echo "Content of .env directory:"
+            ls -la .env/
       - deploy:
           name: Deploy to Staging
           command: |
             echo "Deploy on staging server...."
+            echo "Verifying staging.env content before deployment:"
+            cat .env/staging.env || echo "Error: Cannot read staging.env"
+            
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/staging"
+            scp -P 22 -o StrictHostKeyChecking=no .env/staging.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/staging/.env || echo "Error copying .env file"
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            
             echo "Done1"
             sudo su
-            echo "Done2"
+            
             docker pull ghcr.io/simonbeurel/tddevsecoppspns:staging
-            echo "Done3"
-            docker stop $(docker ps -q --filter "ancestor=ghcr.io/simonbeurel/tddevsecoppspns:staging")
-            echo "Done4"
-            docker run -d -p 8090:80 ghcr.io/simonbeurel/tddevsecoppspns:staging
-            echo "Done5"
+            docker stop tddevsecoppspns-staging 
+            docker rm tddevsecoppspns-staging 
+            
+            echo "Done2"
+            docker run -d \
+              --name tddevsecoppspns-staging \
+              --env-file /home/ubuntu/staging/.env \
+              -p 8080:80 \
+              --restart unless-stopped \
+              ghcr.io/simonbeurel/tddevsecoppspns:staging
+
+            echo "Deployment completed"
             EOF
 
 
   deploy-ssh-production:
     executor: simple-executor
     steps:
+      - *attach_workspace
+      - run:
+          name: Debug Workspace
+          command: |
+            echo "Current directory structure:"
+            pwd
+            ls -la
+            echo "Content of .env directory:"
+            ls -la .env/
       - deploy:
           name: Deploy to Production
           command: |
             echo "Deploy on production server...."
+            echo "Verifying prod.env content before deployment:"
+            cat .env/prod.env || echo "Error: Cannot read prod.env"
+            
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/prod"
+            scp -P 22 -o StrictHostKeyChecking=no .env/prod.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/prod/.env || echo "Error copying .env file"
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            
             echo "Done1"
             sudo su
-            echo "Done2"
-            docker pull ghcr.io/simonbeurel/tddevsecoppspns:main
-            echo "Done3"
+            
+            docker pull ghcr.io/simonbeurel/tddevsecoppspns:main             
             docker stop tddevsecoppspns-prod
-            docker remove tddevsecoppspns-prod
-            echo "Done4"
-            docker run -d -p 8080:80 --name tddevsecoppspns-prod ghcr.io/simonbeurel/tddevsecoppspns:main
-            echo "Done5"
+            docker rm tddevsecoppspns-prod
+            
+            echo "Done2"
+            docker run -d \
+              --name tddevsecoppspns-prod \
+              --env-file /home/ubuntu/prod/.env \
+              -p 80:80 \
+              --restart unless-stopped \
+              ghcr.io/simonbeurel/tddevsecoppspns:main
+            
+            echo "Deployment completed"
             EOF
 
   phpmetrics:
@@ -385,8 +428,41 @@ jobs:
           path: trivy_results.txt
           destination: trivy_scan_results
 
-workflows:
+  configure-infisical:
+    executor: simple-executor
+    steps:
+      - *attach_workspace
+      - run:
+          name: Install Infisical
+          command: |
+            curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | sudo -E bash
+            sudo apt-get update && sudo apt-get install -y infisical
+            infisical --version
+      - run:
+          name: Setup Infisical and Login
+          command: |
+            mkdir -p .env 
+            export INFISICAL_TOKEN=$(infisical login --domain=https://eu.infisical.com --method=universal-auth --client-id=$INFISICAL_CLIENT_ID --client-secret=$INFISICAL_CLIENT_SECRET  --silent --plain)
+            
+            echo "INFISICAL_TOKEN   $INFISICAL_TOKEN" 
+            echo "INFISICAL_PROJECT_ID  $INFISICAL_PROJECT_ID"
+            
+            infisical export --domain=https://eu.infisical.com --env=staging --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/staging.env
+            infisical export --domain=https://eu.infisical.com --env=prod --format=dotenv --projectId $INFISICAL_PROJECT_ID > .env/prod.env
+            
+            echo "Staging secrets"
+            cat .env/staging.env
+            echo "Prod secrets"
+            cat .env/prod.env
+      - persist_to_workspace:
+            root: .
+            paths:
+                - .env/
+      - run:
+          name: Check env
+          command: ls -al .env/
 
+workflows:
   metrics_workflow:
     jobs:
       - debug-info
@@ -475,6 +551,15 @@ workflows:
   deployment_workflow:
     jobs:
       - build-setup
+      - configure-infisical:
+          requires:
+            - build-setup
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - develop
       - build-docker-image:
           filters:
             branches:
@@ -499,6 +584,7 @@ workflows:
           requires:
             - hold-for-deployment
             - build-docker-image
+            - configure-infisical
           filters:
             branches:
               only:
@@ -507,6 +593,7 @@ workflows:
           requires:
             - hold-for-deployment
             - build-docker-image
+            - configure-infisical
           filters:
             branches:
               only:
