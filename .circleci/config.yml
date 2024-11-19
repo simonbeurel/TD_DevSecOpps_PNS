@@ -298,9 +298,9 @@ jobs:
             echo "Verifying staging.env content before deployment:"
             cat .env/staging.env || echo "Error: Cannot read staging.env"
             
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/staging"
-            scp -P 22 -o StrictHostKeyChecking=no .env/staging.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/staging/.env || echo "Error copying .env file"
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            ssh -o StrictHostKeyChecking=no $awsSERVER "mkdir -p /home/ubuntu/staging"
+            scp -P 22 -o StrictHostKeyChecking=no .env/staging.env $awsSERVER:/home/ubuntu/staging/.env || echo "Error copying .env file"
+            ssh -o StrictHostKeyChecking=no $awsSERVER \<< EOF
             
             echo "Done1"
             sudo su
@@ -340,9 +340,9 @@ jobs:
             echo "Verifying prod.env content before deployment:"
             cat .env/prod.env || echo "Error: Cannot read prod.env"
             
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/prod"
-            scp -P 22 -o StrictHostKeyChecking=no .env/prod.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/prod/.env || echo "Error copying .env file"
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com \<< EOF
+            ssh -o StrictHostKeyChecking=no $awsSERVER "mkdir -p /home/ubuntu/prod"
+            scp -P 22 -o StrictHostKeyChecking=no .env/prod.env $awsSERVER:/home/ubuntu/prod/.env || echo "Error copying .env file"
+            ssh -o StrictHostKeyChecking=no $awsSERVER \<< EOF
             
             echo "Done1"
             sudo su
