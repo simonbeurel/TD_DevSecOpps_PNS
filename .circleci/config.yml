@@ -337,6 +337,8 @@ jobs:
           name: Deploy to Production
           command: |
             echo "Deploy on production server...."
+            echo "Verifying prod.env content before deployment:"
+            cat .env/prod.env || echo "Error: Cannot read prod.env"
             
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com "mkdir -p /home/ubuntu/prod"
             scp -P 22 -o StrictHostKeyChecking=no .env/prod.env ubuntu@ec2-35-180-47-91.eu-west-3.compute.amazonaws.com:/home/ubuntu/prod/.env || echo "Error copying .env file"
@@ -356,7 +358,8 @@ jobs:
               -p 8080:80 \
               --restart unless-stopped \
               ghcr.io/simonbeurel/tddevsecoppspns:main
-            echo "Done5"
+            
+            echo "Deployment completed"
             EOF
 
   phpmetrics:
