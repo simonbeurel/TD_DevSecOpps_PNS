@@ -313,7 +313,7 @@ jobs:
             docker run -d \
               --name tddevsecoppspns-staging \
               --env-file /home/ubuntu/staging/.env \
-              -p 8090:80 \
+              -p 8080:80 \
               --restart unless-stopped \
               ghcr.io/simonbeurel/tddevsecoppspns:staging
 
@@ -355,7 +355,7 @@ jobs:
             docker run -d \
               --name tddevsecoppspns-prod \
               --env-file /home/ubuntu/prod/.env \
-              -p 8080:80 \
+              -p 80:80 \
               --restart unless-stopped \
               ghcr.io/simonbeurel/tddevsecoppspns:main
             
